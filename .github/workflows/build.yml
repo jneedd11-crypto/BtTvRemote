@@ -48,15 +48,15 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
 
-    - name: Build APK
+    - name: Generate Wrapper and Build APK
       working-directory: ${{ steps.find-dir.outputs.project_path }}
       run: |
-        if [ -f "gradlew" ]; then
-          chmod +x gradlew
-          ./gradlew assembleDebug
-        else
-          gradle assembleDebug
+        if [ ! -f "gradlew" ]; then
+          echo "Gradle wrapper not found, generating one..."
+          gradle wrapper --gradle-version 8.4
         fi
+        chmod +x gradlew
+        ./gradlew assembleDebug
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
